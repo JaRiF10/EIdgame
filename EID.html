@@ -108,7 +108,7 @@
     </div>
 
     <div id="wordGame" class="stage hidden">
-      <div class="notice">Type any 5-letter word (case-insensitive) to get a point.</div>
+      <div class="notice">Write any 10 words which are related to JARIF ABRAR .</div>
       <div class="button-row">
         <input id="guessInput" placeholder="Type a 5-letter word" autocomplete="off" />
         <button id="submitGuess">Submit</button>
@@ -165,9 +165,9 @@
       qSection.classList.add('hidden');
       result.classList.add('hidden');
       correct = 0;
-      needed = 5;
+      needed = 10;
       scoreEl.textContent = `Correct: ${correct} / ${needed}`;
-      feedback.textContent = '';
+      feedback.textContent = 'Write any 10 words which are related to me';
       guessInput.value = '';
       guessInput.focus();
     }
@@ -182,7 +182,8 @@
       'kinet','lumber','might','novel','ocean','piano','queen','river','smile','tiger',
       'unity','vowel','water','xenon','youth','zebra','peace','shine','dream','sweet',
       'truth','light','bliss','crazy','yummy','pride','glory','angel','stars','sugar',
-      'magic','music','happy','lucky','brain','proud','faith','power','alive','brave','smile',
+      'magic','music','happy','lucky','brain','proud','faith','power','alive','brave','smile','nerdy','happy'
+      ,'honest','riche','foodie'
     ];
 
     submitGuess.addEventListener('click', () => {
@@ -316,3 +317,4 @@
   </script>
 </body>
 </html>
+
