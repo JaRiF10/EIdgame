@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eid Mubarak Love Game</title>
+  <style>
+    :root {
+      --bg: #0a1020;
+      --text: #f8f4ea;
+      --primary: #ffb74d;
+      --accent: #7bceff;
+      --green: #7dff9f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(circle at top, #224466 0%, #0a1020 45%, #000 100%);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .app {
+      width: min(800px, 100%);
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(20, 40, 80, 0.95), rgba(2, 6, 18, 0.95));
+      border: 1px solid rgba(255,255,255,.1);
+      box-shadow: 0 0 45px rgba(0,0,0,.5);
+      padding: 20px;
+      text-align: center;
+    }
+    h1 { margin: 0 0 8px; letter-spacing: 0.7px; font-size: clamp(1.5rem, 2.7vw, 2.4rem); }
+    p { margin: 0 0 16px; color: #d5dcf2; }
+    .scene {
+      margin: 14px auto 18px;
+      width: 280px;
+      height: 300px;
+      position: relative;
+      margin-bottom: 18px;
+    }
+    .tree {
+      position: absolute;
+      left: 50%;
+      top: 36px;
+      transform: translateX(-50%);
+      width: 150px;
+      height: 150px;
+      border-radius: 50% 50% 45% 45%;
+      background: radial-gradient(circle at 30% 30%, #88ff9d 0%, #2d8f3c 45%, #1f5f28 100%);
+      box-shadow: 0 0 30px rgba(120,255,180,0.55), 0 10px 30px rgba(0,0,0,0.35);
+      animation: pulse 1.6s ease-in-out infinite alternate;
+    }
+    .tree::before {
+      content: "";
+      position: absolute;
+      left: 45%;
+      top: 80%;
+      width: 28px;
+      height: 85px;
+      border-radius: 12px;
+      background: #7a4a1c;
+      transform: translateX(-50%);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    }
+    @keyframes pulse { to { transform: translateX(-50%) scale(1.05); box-shadow: 0 0 45px rgba(255,255,255,0.4); } }
+    .go {
+      position: absolute;
+      bottom: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 2rem;
+      letter-spacing: 2px;
+      color: #fdf4d1;
+      text-shadow: 0 0 8px #ffdd88, 0 0 18px #ffbb44;
+      animation: glow 1.3s ease-in-out infinite alternate;
+    }
+    @keyframes glow { to { text-shadow: 0 0 12px #ffdb7f, 0 0 25px #ffbb42, 0 0 45px #ff9227; } }
+    .hidden { display: none; }
+    .button-row { margin: 16px 0; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+    button { border: 0; border-radius: 10px; padding: 10px 16px; background: linear-gradient(135deg,#ff9f4a,#ff5f7d); color: #fff; font-size: 1rem; cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,.25); transition: transform .12s ease, background .2s ease; }
+    button:hover { transform: translateY(-1px); background: linear-gradient(135deg,#ffb968,#ff6f9c); }
+    button.secondary { background: linear-gradient(135deg,#34a7ff,#5f7dff); }
+    input { border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.08); color: #fff; padding: 10px; border-radius: 8px; min-width: 240px; margin-right: 8px; }
+    .word { margin: 10px 0 4px; font-weight: 700; }
+    .notice { margin: 10px 0; color: #f3f7ff; font-weight: 600; }
+    .final { font-size: clamp(1rem, 2.2vw, 1.6rem); color: #7dffb7; margin-top: 18px; }
+    .no-tricky { position: relative; }
+    .score { margin: 10px 0; font-size: .95rem; color: #dfd8f4; }
+    .link { color: #70d6ff; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>Eid Mubarak, Sayang </h1>
+    <p> MUhehehe.</p>
+
+    <div class="scene">
+      <div class="tree"></div>
+      <div class="go">GO</div>
+    </div>
+
+    <div id="stage1" class="stage">
+      <button id="startBtn">Go</button>
+    </div>
+
+    <div id="wordGame" class="stage hidden">
+      <div class="notice">Write any 10 words which are related to JARIF ABRAR .</div>
+      <div class="button-row">
+        <input id="guessInput" placeholder="Type a 5-letter word" autocomplete="off" />
+        <button id="submitGuess">Submit</button>
+      </div>
+      <div class="score" id="score">Correct: 0 / 5</div>
+      <div id="feedback" class="notice"></div>
+    </div>
+
+    <div id="qSection" class="stage hidden">
+      <div id="question" class="notice"></div>
+      <div class="button-row">
+        <button id="yesAnswer" class="secondary">YES</button>
+        <button id="noAnswer" class="secondary">NO</button>
+      </div>
+    </div>
+
+    <div id="result" class="stage hidden">
+      <div id="resultText" class="notice"></div>
+      <div id="finalText" class="final hidden">Eid Mubarak, my love. I miss you and I love you always ❤️</div>
+      <button id="restart" class="secondary hidden">Play Again</button>
+    </div>
+  </div>
+
+  <script>
+    const startBtn = document.getElementById('startBtn');
+    const wordGame = document.getElementById('wordGame');
+    const stage1 = document.getElementById('stage1');
+    const qSection = document.getElementById('qSection');
+    const result = document.getElementById('result');
+    const questionEl = document.getElementById('question');
+    const yesAnswer = document.getElementById('yesAnswer');
+    const noAnswer = document.getElementById('noAnswer');
+    const guessInput = document.getElementById('guessInput');
+    const submitGuess = document.getElementById('submitGuess');
+    const scoreEl = document.getElementById('score');
+    const feedback = document.getElementById('feedback');
+    const resultText = document.getElementById('resultText');
+    const finalText = document.getElementById('finalText');
+    const restart = document.getElementById('restart');
+
+    let needed = 5;
+    let correct = 0;
+    let stage = 0;
+    const questions = [
+      { text: 'Do you miss me?', yesNext: 1, noEnd: 'You said NO. Game over. Please say YES for love.' },
+      { text: 'Will you love me if I am busuk?', yesNext: 2, noEnd: 'No is not right here. I need love, game ends.' },
+      { text: 'Will you go out with me?', yesNext: 3, noEnd: 'Nope, that NO button is tricky and moves around. Try YES.' },
+      { text: 'Are you gay?', yesNext: 4, noEnd: 'Nope, this button moves. Keep calm and answer YES.' }
+    ];
+
+    function startWordGame() {
+      stage1.classList.add('hidden');
+      wordGame.classList.remove('hidden');
+      qSection.classList.add('hidden');
+      result.classList.add('hidden');
+      correct = 0;
+      needed = 10;
+      scoreEl.textContent = `Correct: ${correct} / ${needed}`;
+      feedback.textContent = 'Write any 10 words which are related to me';
+      guessInput.value = '';
+      guessInput.focus();
+    }
+
+    startBtn.addEventListener('click', () => {
+      startWordGame();
+    });
+
+    const bannedWords = ['bitch', 'busuk', 'puppy', 'gatal'];
+    const dictionary = [
+      'apple','baker','candy','dance','eager','frame','greet','heart','island','joker',
+      'kinet','lumber','might','novel','ocean','piano','queen','river','smile','tiger',
+      'unity','vowel','water','xenon','youth','zebra','peace','shine','dream','sweet',
+      'truth','light','bliss','crazy','yummy','pride','glory','angel','stars','sugar',
+      'magic','music','happy','lucky','brain','proud','faith','power','alive','brave','smile','nerdy','happy'
+      ,'honest','riche','foodie'
+    ];
+
+    submitGuess.addEventListener('click', () => {
+      const guess = guessInput.value.trim();
+      if (!guess) return;
+      const clean = guess.replace(/\s+/g, '').toLowerCase();
+      if (bannedWords.includes(clean)) {
+        feedback.textContent = 'HAHAHA SO SMART IK YOU LITTLE KITTY.';
+        guessInput.value = '';
+        guessInput.focus();
+        return;
+      }
+      if (!/^[a-zA-Z]{5}$/.test(clean)) {
+        feedback.textContent = 'Please enter exactly 5 letters. Numbers and symbols will not count.';
+        guessInput.focus();
+        return;
+      }
+      if (!dictionary.includes(clean)) {
+        feedback.textContent = 'Not a real word. Try another 5-letter word.';
+        guessInput.focus();
+        return;
+      }
+      correct += 1;
+      feedback.textContent = 'GOOd Girl ! LISTEN TO DADDY JARIF';
+      scoreEl.textContent = `GOOD GIRL: ${correct} / ${needed}`;
+      guessInput.value = '';
+      if (correct >= needed) {
+        wordGame.classList.add('hidden');
+        askQuestion(0);
+        return;
+      }
+      guessInput.focus();
+    });
+
+    guessInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') submitGuess.click();
+    });
+
+    function askQuestion(index) {
+      stage = index;
+      questionEl.textContent = questions[index].text;
+      qSection.classList.remove('hidden');
+      result.classList.add('hidden');
+      noAnswer.classList.remove('no-tricky');
+      noAnswer.style.position = '';
+      noAnswer.style.left = '';
+      noAnswer.style.top = '';
+      noAnswer.onmouseenter = null;
+      noAnswer.onclick = null;
+    }
+
+    yesAnswer.addEventListener('click', () => {
+      if (stage === 0) {
+        askQuestion(1);
+      } else if (stage === 1) {
+        askQuestion(2);
+      } else if (stage === 2) {
+        askQuestion(3);
+      } else if (stage === 3) {
+        showFinal();
+      }
+    });
+
+    noAnswer.addEventListener('click', (e) => {
+      if (stage === 2 || stage === 3) {
+        e.preventDefault();
+        feedback.textContent = 'No moved again! Choose YES to proceed.';
+        return;
+      }
+      if (stage < 3) {
+        endGame(questions[stage].noEnd);
+      } else {
+        endGame(questions[stage].noEnd);
+      }
+    });
+
+    function endGame(reason) {
+      qSection.classList.add('hidden');
+      result.classList.remove('hidden');
+      resultText.textContent = reason;
+      finalText.classList.remove('hidden');
+      finalText.textContent = reason + ' ❤️ Eid Mubarak.ISteri ku you wanted to know if you are Gay or not but you are gay fantastic muehhehe';
+      restart.classList.remove('hidden');
+    }
+
+    function showFinal() {
+      qSection.classList.add('hidden');
+      result.classList.remove('hidden');
+      resultText.textContent = 'All answers are perfect! You are my one and only.';
+      finalText.classList.remove('hidden');
+      finalText.textContent = 'Eid Mubarak, sayang! I love you so much 💞';
+      restart.classList.remove('hidden');
+    }
+
+    // special NO button behavior for stage 3 (third question)
+    function addNoButtonTrick() {
+      noAnswer.onmouseenter = () => {
+        if (stage === 2 || stage === 3) {
+          const maxX = window.innerWidth - noAnswer.offsetWidth - 20;
+          const maxY = window.innerHeight - noAnswer.offsetHeight - 20;
+          const x = Math.max(10, Math.floor(Math.random() * maxX));
+          const y = Math.max(10, Math.floor(Math.random() * maxY));
+          noAnswer.style.position = 'fixed';
+          noAnswer.style.left = x + 'px';
+          noAnswer.style.top = y + 'px';
+        }
+      };
+      noAnswer.onclick = (e) => {
+        if (stage === 2 || stage === 3) {
+          e.preventDefault();
+          feedback.textContent = 'The NO button dodged you! Choose YES.';
+        }
+      };
+    }
+
+    noAnswer.addEventListener('mouseover', () => {
+      if (stage === 2 || stage === 3) {
+        addNoButtonTrick();
+      }
+    });
+
+    restart.addEventListener('click', () => {
+      stage1.classList.remove('hidden');
+      wordGame.classList.add('hidden');
+      qSection.classList.add('hidden');
+      result.classList.add('hidden');
+      restart.classList.add('hidden');
+      finalText.classList.add('hidden');
+      resultText.textContent = '';
+    });
+  </script>
+</body>
+</html>
